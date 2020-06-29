@@ -19,7 +19,7 @@ test_specs = {}
 # READ TEST FILE
 f = open(TEST_FILE_PATH)
 size = f.readline()
-nrows, nfeature,nlabel = [int(s) for s in size.split()]
+nrows, nfeature, nlabel = [int(s) for s in size.split()]
 test_specs['test_length'] = nrows
 x_m = [[] for i in range(nrows)]
 pos = [[] for i in range(nrows)]
