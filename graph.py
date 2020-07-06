@@ -60,12 +60,12 @@ def get_top_k(graph_params, num, x_single_row):
     weights = model.get_predictions(x_single_row)
     edge_map = graph_params["edge_map"]
 
-    indeg = [0 for i in range(num_nodes+2)]
+    indeg = [0 for i in range(num_nodes+1)]
     for i in range(1, num_nodes+1):
         for a in adjList[i]:
             indeg[a] += 1
 
-    bestk = [list() for i in range(num_nodes+2)]
+    bestk = [list() for i in range(num_nodes+1)]
     bestk[1].append([0, -1])
 
     q = deque()
@@ -74,16 +74,40 @@ def get_top_k(graph_params, num, x_single_row):
         ver = q.popleft()
         for a in adjList[ver]:
             ##
+            cnt = 0
             for val in bestk[ver]:
                 new_val = val + weights[edge_map[str(ver)+":"+str(a)]]
-                for i in range(bestk[a]):
-                    if bestk[a][i][0] > new_val:
+                counter = 0
+                while counter < len(bestk[a]):
+                    if bestk[a][counter][0] > new_val:
+                        temp = bestk[a][counter]
+                        bestk[a][counter] = [new_val, [ver, cnt]]
+                        while counter < len(bestk[a])-1 and counter < num-1:
+                            temp2 = bestk[a][counter+1]
+                            bestk[a][counter+1] = temp
+                            temp = temp2
+                            counter += 1
                         break
-                # if
-            ##
+                    counter += 1
+                # if counter < num:
+                if len(bestk[a]) < num:
+                    bestk[a].append(temp)
+                cnt += 1
+                ##
             indeg[a] -= 1
             if indeg[a] == 0:
                 q.append(a)
+
+    paths = []
+    for i in range(len(bestk[num_nodes])):
+        path = [num_nodes]
+        curr = bestk[num_nodes][i]
+        while curr[1] != -1:
+            path.append(curr[1][0])
+            curr = bestk[curr[1][0]][curr[1][1]]
+        paths.append(path)
+
+    print(paths)
 
 
 if __name__ == "__main__":
