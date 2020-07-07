@@ -15,28 +15,29 @@ def create_graph(train_specs):
     num_labels = train_specs["num_labels"]
 
     layers = math.floor(math.log2(num_labels)) + 1
-    num_nodes = layers*2+2
+    num_nodes = layers * 2
     adjList = [list() for i in range(num_nodes+1)]
-    adjList[1].append(1)
-    adjList[1].append(2)
+    adjList[0].append(1)
+    adjList[0].append(2)
     for i in range(2, layers+1):
-        j = 2 * i + 1
-        adjList[j-3].append(j)
-        adjList[j-3].append(j-1)
-        adjList[j-2].append(j)
+        j = 2 * i
+        if j != num_nodes:
+            adjList[j-2].append(j)
+            adjList[j-3].append(j)
         adjList[j-2].append(j-1)
+        adjList[j-3].append(j-1)
     temp = num_labels
     ctr = 1
     while temp > 0:
         if temp % 2 == 1:
-            adjList[ctr*2].append(num_nodes)
+            adjList[ctr*2-1].append(num_nodes)
         ctr += 1
         temp //= 2
 
     edges = list()
     edge_map = dict()
     cnt = 0
-    for i in range(1, num_nodes+1):
+    for i in range(0, num_nodes+1):
         for a in adjList[i]:
             edges.append([i, a])
             edge_map[str(i)+":"+str(a)] = cnt
@@ -44,11 +45,12 @@ def create_graph(train_specs):
 
     graph_params = {"num_layers": layers,
                     "num_nodes": num_nodes, "adj_list": adjList, "edges": edges, "edge_map": edge_map}
-    # print(num_nodes)
-    # for i in range(1, num_nodes+1):
-    #     for a in adjList[i]:
-    #         print(a, end=" ")
-    #     print()
+    print(num_nodes)
+    for i in range(0, num_nodes+1):
+        print(i,end=' : ')
+        for a in adjList[i]:
+            print(a, end=" ")
+        print()
     return graph_params
 
 
@@ -86,7 +88,7 @@ def get_top_k(graph_params, num, x_single_row):
     bestk[1].append([0, [-1, -1]])
 
     q = deque()
-    q.append(1)
+    q.append(0)
     while len(q) > 0:
         ver = q.popleft()
         for neighbour in adjList[ver]:
@@ -144,4 +146,4 @@ def get_top_k(graph_params, num, x_single_row):
 
 
 if __name__ == "__main__":
-    create_graph({"num_labels": 31})
+    create_graph({"num_labels": int(input())})
