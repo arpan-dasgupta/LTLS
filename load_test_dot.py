@@ -44,13 +44,6 @@ def get_test_data():
     del x_m, pos
     gc.collect()
 
-    y_test = sparse.lil_matrix((nrows, nlabel))
-    for i in range(nrows):
-        for j in y_m[i]:
-            y_test[i, j] = 1
-
-    del y_m
-    gc.collect()
     f.close()
 
     x_test = normalize(x_test, norm='l2', axis=1, copy=False)
@@ -61,7 +54,7 @@ def get_test_data():
 
     print("Testing data is created ")
 
-    return test_specs, x_test, y_test
+    return test_specs, x_test, y_m
 
 
 if __name__ == "__main__":

@@ -45,13 +45,6 @@ def get_train_data():
     del x_m, pos
     gc.collect()
 
-    y_train = sparse.lil_matrix((nrows, nlabel))
-    for i in range(nrows):
-        for j in y_m[i]:
-            y_train[i, j] = 1
-
-    del y_m
-    gc.collect()
     f.close()
 
     x_train = normalize(x_train, norm='l2', axis=1, copy=False)
@@ -59,12 +52,13 @@ def get_train_data():
     train_specs = {
         'train_length': x_train.shape[0],
         'num_features': x_train.shape[1],
-        'num_labels': y_train.shape[1]
+        'num_labels': nlabel
     }
 
     print("Training dataset is created")
+    # print(y_m[0])
 
-    return train_specs, x_train, y_train
+    return train_specs, x_train, y_m
 
 
 if __name__ == "__main__":

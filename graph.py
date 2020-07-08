@@ -47,7 +47,7 @@ def create_graph(train_specs):
                     "num_nodes": num_nodes, "adj_list": adjList, "edges": edges, "edge_map": edge_map}
     print(num_nodes)
     for i in range(0, num_nodes+1):
-        print(i,end=' : ')
+        print(i, end=' : ')
         for a in adjList[i]:
             print(a, end=" ")
         print()
@@ -64,7 +64,7 @@ def assign_edges(graph_params, train_specs):
     graph_params["model":model]
 
 
-def get_top_k(graph_params, num, x_single_row):
+def get_top_k(graph_params, num, x_single_row, weights):
     """
     Performs Viterbi once and returns top 'num' paths for a single training example
     TODO - needs testing
@@ -73,8 +73,6 @@ def get_top_k(graph_params, num, x_single_row):
     adjList = graph_params["adj_list"]
     edges = graph_params["edges"]
     num_edges = len(edges)
-    model = graph_params["model"]
-    weights = model.get_predictions(x_single_row)
     edge_map = graph_params["edge_map"]
 
     # compute indegrees for toposort

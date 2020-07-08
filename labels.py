@@ -15,6 +15,8 @@ def create_matrix(num_edges, num_labels):
 
     label_params = {"num_edges": num_edges, "matrix": mat}
 
+    return label_params
+
 
 def get_edges(label_num, label_params):
     """
@@ -34,6 +36,25 @@ def get_label(edges, label_params):
     """
     Edge list to label number
     TODO Complete this
+    """
+
+
+def get_smallest_positive_path(paths, y_row, label_params):
+    """
+    Out of the paths given, find +ve path lowest in rank
+    """
+
+
+def get_largest_negative_path(paths, y_row, label_params):
+    """
+    Out of the paths given, find +ve path lowest in rank
+    """
+
+
+def update_values(positive_path, negative_path, output):
+    """
+    Given two sets of edges, update the edges in positive with +x and -ve with -x
+    If no need of update, return 1 else 0
     """
 
 
