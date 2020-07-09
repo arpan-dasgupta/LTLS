@@ -61,7 +61,7 @@ def assign_edges(graph_params, train_specs):
     edges = graph_params["edges"]
     num_edges = len(edges)
     model = Linear(num_edges, train_specs["num_features"])
-    graph_params["model":model]
+    return model
 
 
 def get_top_k(graph_params, num, x_single_row, weights):
@@ -77,11 +77,11 @@ def get_top_k(graph_params, num, x_single_row, weights):
 
     # compute indegrees for toposort
     indeg = [0 for i in range(num_nodes+1)]
-    for i in range(1, num_nodes+1):
+    for i in range(0, num_nodes):
         for a in adjList[i]:
             indeg[a] += 1
 
-    # bestk is the dp here, stores [vertex, [parent_vertex, xth highest path reaching parent vertex]]
+    # bestk is the dp here, stores [value, [parent_vertex, xth highest path reaching parent vertex]]
     bestk = [list() for i in range(num_nodes+1)]
     bestk[1].append([0, [-1, -1]])
 
@@ -89,21 +89,26 @@ def get_top_k(graph_params, num, x_single_row, weights):
     q.append(0)
     while len(q) > 0:
         ver = q.popleft()
+        print(ver)
         for neighbour in adjList[ver]:
             ##################
             # Main Viterbi code here
             cnt = 0
             for val in bestk[ver]:
                 # Calculate new weight of path
-                new_val = val + weights[edge_map[str(ver)+":"+str(neighbour)]]
+                new_val = val[0] + \
+                    weights[edge_map[str(ver)+":"+str(neighbour)]]
                 counter = 0
+                temp = [new_val, [ver, cnt]]
                 # Loop till the number of paths here (shouldnt exceed k(num))
                 while counter < len(bestk[neighbour]):
-                    if bestk[neighbour][counter][0] > new_val:
+                    if bestk[neighbour][counter][0] < new_val:
                         # Push back values till the end if a better path found
                         temp = bestk[neighbour][counter]
+                        # print(temp)
                         bestk[neighbour][counter] = [new_val, [ver, cnt]]
                         while counter < len(bestk[neighbour])-1 and counter < num-1:
+                            # print(temp)
                             # Swap temp, bestk[neighbour][counter+1]
                             temp2 = bestk[neighbour][counter+1]
                             bestk[neighbour][counter+1] = temp
@@ -121,26 +126,29 @@ def get_top_k(graph_params, num, x_single_row, weights):
             if indeg[neighbour] == 0:
                 q.append(neighbour)
 
+    # print("Here", num_nodes)
     # Retrieve paths (in vertices form)
     paths = []
     for i in range(len(bestk[num_nodes])):
         path = [num_nodes]
         curr = bestk[num_nodes][i]
-        while curr[1] != -1:
+        print(curr)
+        while curr[1][1] != -1:
             path.append(curr[1][0])
             curr = bestk[curr[1][0]][curr[1][1]]
         paths.append(path)
 
+    # print(paths)
     # Convert to edge index form
     indexed_paths = []
     for path in paths:
         indexed_path = []
         for i in range(len(path)-1):
-            indexed_path.append(edge_map[str(path[i])+':'+str(path[i+1])])
+            indexed_path.append(edge_map[str(path[i+1])+':'+str(path[i])])
         indexed_paths.append(indexed_path)
 
     # print(paths)
-    return indexed_path
+    return indexed_paths
 
 
 if __name__ == "__main__":
