@@ -15,13 +15,13 @@ def create_graph(train_specs):
     num_labels = train_specs["num_labels"]
 
     layers = math.floor(math.log2(num_labels)) + 1
-    num_nodes = layers * 2
-    adjList = [list() for i in range(num_nodes+1)]
+    num_nodes = layers * 2 + 1
+    adjList = [list() for i in range(num_nodes)]
     adjList[0].append(1)
     adjList[0].append(2)
     for i in range(2, layers+1):
         j = 2 * i
-        if j != num_nodes:
+        if j != num_nodes-1:
             adjList[j-2].append(j)
             adjList[j-3].append(j)
         adjList[j-2].append(j-1)
@@ -30,14 +30,14 @@ def create_graph(train_specs):
     ctr = 1
     while temp > 0:
         if temp % 2 == 1:
-            adjList[ctr*2-1].append(num_nodes)
+            adjList[ctr*2-1].append(num_nodes-1)
         ctr += 1
         temp //= 2
 
     edges = list()
     edge_map = dict()
     cnt = 0
-    for i in range(0, num_nodes+1):
+    for i in range(0, num_nodes):
         for a in adjList[i]:
             edges.append([i, a])
             edge_map[str(i)+":"+str(a)] = cnt
@@ -45,12 +45,12 @@ def create_graph(train_specs):
 
     graph_params = {"num_layers": layers,
                     "num_nodes": num_nodes, "adj_list": adjList, "edges": edges, "edge_map": edge_map}
-    print(num_nodes)
-    for i in range(0, num_nodes+1):
-        print(i, end=' : ')
-        for a in adjList[i]:
-            print(a, end=" ")
-        print()
+    # print(num_nodes)
+    # for i in range(0, num_nodes):
+    #     print(i, end=' : ')
+    #     for a in adjList[i]:
+    #         print(a, end=" ")
+    #     print()
     return graph_params
 
 
@@ -64,7 +64,7 @@ def assign_edges(graph_params, train_specs):
     return model
 
 
-def get_top_k(graph_params, num, x_single_row, weights):
+def get_top_k(graph_params, num, weights):
     """
     Performs Viterbi once and returns top 'num' paths for a single training example
     TODO - needs testing
@@ -76,21 +76,22 @@ def get_top_k(graph_params, num, x_single_row, weights):
     edge_map = graph_params["edge_map"]
 
     # compute indegrees for toposort
-    indeg = [0 for i in range(num_nodes+1)]
+    indeg = [0 for i in range(num_nodes)]
     for i in range(0, num_nodes):
         for a in adjList[i]:
             indeg[a] += 1
 
     # bestk is the dp here, stores [value, [parent_vertex, xth highest path reaching parent vertex]]
-    bestk = [list() for i in range(num_nodes+1)]
-    bestk[1].append([0, [-1, -1]])
+    bestk = [list() for i in range(num_nodes)]
+    bestk[0].append([0, [-1, -1]])
 
     q = deque()
     q.append(0)
     while len(q) > 0:
         ver = q.popleft()
-        print(ver)
+        # print(ver)
         for neighbour in adjList[ver]:
+            # print(neighbour, end=' + ')
             ##################
             # Main Viterbi code here
             cnt = 0
@@ -120,22 +121,27 @@ def get_top_k(graph_params, num, x_single_row, weights):
                 # If there were less elements than k then add
                 if len(bestk[neighbour]) < num:
                     bestk[neighbour].append(temp)
+                    # print("Yay ", neighbour)
                 cnt += 1
             ##################
             indeg[neighbour] -= 1
             if indeg[neighbour] == 0:
                 q.append(neighbour)
+        # print()
+        # print(bestk)
 
     # print("Here", num_nodes)
     # Retrieve paths (in vertices form)
     paths = []
-    for i in range(len(bestk[num_nodes])):
-        path = [num_nodes]
-        curr = bestk[num_nodes][i]
+    for i in range(len(bestk[num_nodes-1])):
+        path = [num_nodes-1]
+        curr = bestk[num_nodes-1][i]
         print(curr)
         while curr[1][1] != -1:
             path.append(curr[1][0])
+            # print(curr[1][0], curr)
             curr = bestk[curr[1][0]][curr[1][1]]
+        # path.append(0)
         paths.append(path)
 
     # print(paths)
@@ -147,6 +153,10 @@ def get_top_k(graph_params, num, x_single_row, weights):
             indexed_path.append(edge_map[str(path[i+1])+':'+str(path[i])])
         indexed_paths.append(indexed_path)
 
+    # print("======")
+    # for i in range(num_nodes):
+    #     print(bestk[i])
+    # print("======")
     # print(paths)
     return indexed_paths
 
