@@ -136,7 +136,7 @@ def get_top_k(graph_params, num, weights):
     for i in range(len(bestk[num_nodes-1])):
         path = [num_nodes-1]
         curr = bestk[num_nodes-1][i]
-        print(curr)
+        # print(curr)
         while curr[1][1] != -1:
             path.append(curr[1][0])
             # print(curr[1][0], curr)
