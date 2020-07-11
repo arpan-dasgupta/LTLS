@@ -12,7 +12,6 @@ Header Line: Total_Points Num_Features Num_Labels
 1 line per datapoint : label1,label2,...labelk ft1:ft1_val ft2:ft2_val ft3:ft3_val .. ftd:ftd_valsour
 '''
 
-test_specs = {}
 
 
 def get_test_data():
@@ -20,7 +19,6 @@ def get_test_data():
     f = open(TEST_FILE_PATH)
     size = f.readline()
     nrows, nfeature, nlabel = [int(s) for s in size.split()]
-    test_specs['test_length'] = nrows
     x_m = [[] for i in range(nrows)]
     pos = [[] for i in range(nrows)]
     y_m = [[] for i in range(nrows)]

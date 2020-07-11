@@ -34,8 +34,8 @@ def create_graph(train_specs):
         ctr += 1
         temp //= 2
 
-    edges = list()
-    edge_map = dict()
+    edges = []
+    edge_map = {}
     cnt = 0
     for i in range(0, num_nodes):
         for a in adjList[i]:
@@ -46,7 +46,7 @@ def create_graph(train_specs):
     graph_params = {"num_layers": layers,
                     "num_nodes": num_nodes, "adj_list": adjList, "edges": edges, "edge_map": edge_map}
     # print(num_nodes)
-    # for i in range(0, num_nodes):
+    # for i in range(0, num_nodes+1):
     #     print(i, end=' : ')
     #     for a in adjList[i]:
     #         print(a, end=" ")
@@ -67,7 +67,7 @@ def assign_edges(graph_params, train_specs):
 def get_top_k(graph_params, num, weights):
     """
     Performs Viterbi once and returns top 'num' paths for a single training example
-    TODO - needs testing
+    TODO: needs testing
     """
     num_nodes = graph_params["num_nodes"]
     adjList = graph_params["adj_list"]

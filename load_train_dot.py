@@ -11,20 +11,15 @@ Header Line: Total_Points Num_Features Num_Labels
 1 line per datapoint : label1,label2,...labelk ft1:ft1_val ft2:ft2_val ft3:ft3_val .. ftd:ftd_valsour
 '''
 
-train_specs = {}
-
 
 def get_train_data():
     # READ TRAINING FILE
     f = open(TRAIN_FILE_PATH)
     size = f.readline()
     nrows, nfeature, nlabel = [int(s) for s in size.split()]
-    # train_specs['train_length'] = nrows
-    # train_specs['num_features'] = nfeature
-    # train_specs['num_labels'] = nlabel
-    x_m = [[] for i in range(nrows)]
-    pos = [[] for i in range(nrows)]
-    y_m = [[] for i in range(nrows)]
+
+    x_m, pos, y_m = [[[]] * nrows] * 3
+
     for i in range(nrows):
         line = f.readline()
         temp = [s for s in line.split(sep=' ')]
@@ -34,7 +29,7 @@ def get_train_data():
             try:
                 int(s)
                 y_m[i] = [int(s) for s in temp[0].split(',')]
-            except:
+            except ValueError:
                 y_m[i] = []
 
     x_train = sparse.lil_matrix((nrows, nfeature))
