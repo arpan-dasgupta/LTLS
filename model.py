@@ -9,10 +9,9 @@ class Linear:
     """
 
     def __init__(self, num_models, num_features):
-        self.models = [linear_model.LinearRegression()
-                       for i in range(num_models)]
+        self.models = [linear_model.LinearRegression()] * num_models
         self.num_models = num_models
-        x_train_single = [np.random.random() for i in range(num_features)]
+        x_train_single = [np.random.random()] * num_features
         for i in range(num_models):
             self.models[i].fit([x_train_single], [np.random.random()])
 
@@ -20,8 +19,9 @@ class Linear:
         """
         Get predictions for a single row of features
         """
+
         x_row = x_train_single.toarray()
-        h = list()
+        h = []
         for i in range(self.num_models):
             h.append(self.models[i].predict(x_row)[0])
 
