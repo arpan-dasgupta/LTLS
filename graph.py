@@ -34,8 +34,8 @@ def create_graph(train_specs):
         ctr += 1
         temp //= 2
 
-    edges = list()
-    edge_map = dict()
+    edges = []
+    edge_map = {}
     cnt = 0
     for i in range(0, num_nodes+1):
         for a in adjList[i]:
@@ -45,12 +45,12 @@ def create_graph(train_specs):
 
     graph_params = {"num_layers": layers,
                     "num_nodes": num_nodes, "adj_list": adjList, "edges": edges, "edge_map": edge_map}
-    print(num_nodes)
-    for i in range(0, num_nodes+1):
-        print(i, end=' : ')
-        for a in adjList[i]:
-            print(a, end=" ")
-        print()
+    # print(num_nodes)
+    # for i in range(0, num_nodes+1):
+    #     print(i, end=' : ')
+    #     for a in adjList[i]:
+    #         print(a, end=" ")
+    #     print()
     return graph_params
 
 
@@ -64,10 +64,10 @@ def assign_edges(graph_params, train_specs):
     return model
 
 
-def get_top_k(graph_params, num, x_single_row, weights):
+def get_top_k(graph_params, num, weights):
     """
     Performs Viterbi once and returns top 'num' paths for a single training example
-    TODO - needs testing
+    TODO: needs testing
     """
     num_nodes = graph_params["num_nodes"]
     adjList = graph_params["adj_list"]
@@ -89,7 +89,7 @@ def get_top_k(graph_params, num, x_single_row, weights):
     q.append(0)
     while len(q) > 0:
         ver = q.popleft()
-        print(ver)
+        # print(ver)
         for neighbour in adjList[ver]:
             ##################
             # Main Viterbi code here
@@ -132,7 +132,6 @@ def get_top_k(graph_params, num, x_single_row, weights):
     for i in range(len(bestk[num_nodes])):
         path = [num_nodes]
         curr = bestk[num_nodes][i]
-        print(curr)
         while curr[1][1] != -1:
             path.append(curr[1][0])
             curr = bestk[curr[1][0]][curr[1][1]]
