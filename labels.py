@@ -1,11 +1,12 @@
 import math
 import numpy as np
 
+from config import ADD_VALUE
 from graph import get_top_k
 
 
 def assign(u, mat, i, graph):
-    if u == graph['num_nodes']:
+    if u == graph['num_nodes']-1:
         return [i]
     ret = []
     for index in range(len(graph['adj_list'][u])):
@@ -30,7 +31,19 @@ def create_matrix(num_labels, graph):
 
     assign(0, mat, 0, graph)
 
-    label_params = {"num_edges": num_edges, "matrix": mat}
+    edge_to_label = {}
+    for i in range(num_labels):
+        cur_edges = mat[i].tolist()
+        edges_hot = ""
+        for j in range(num_edges):
+            if cur_edges[j]:
+                edges_hot += '1'
+            else:
+                edges_hot += '0'
+        edge_to_label[edges_hot] = i
+
+    label_params = {"num_edges": num_edges,
+                    "matrix": mat, "edge_to_label": edge_to_label}
 
     return label_params
 
@@ -55,13 +68,20 @@ def get_label(edges, label_params):
     Edge list to label number
     TODO Complete this
     """
+    edge_hot = ""
+    for i in range(label_params['num_edges']):
+        if i in edges:
+            edge_hot += '1'
+        else:
+            edge_hot += '0'
+    return label_params['edge_to_label'][edge_hot]
 
 
 def get_smallest_positive_path(y_row, label_params, weights):
     """
     Out of the paths given, find +ve path lowest in rank
     """
-    val, path = 0, []
+    val, path = 10**7, []
     for label in y_row:
         cur_val, cur_path = get_path(label, label_params, weights)
         if cur_val < val:
@@ -69,12 +89,15 @@ def get_smallest_positive_path(y_row, label_params, weights):
     return val, path
 
 
-def get_largest_negative_path(y_row, graph, weights):
+def get_largest_negative_path(y_row, paths, label_params, weights):
     """
     Out of the paths given, find +ve path lowest in rank
     """
-    res = get_top_k(graph, len(y_row) + 1, weights)
-    print(res)
+    for path in paths:
+        label = get_label(path, label_params)
+        # print(label)
+        if label not in y_row:
+            return get_path(label, label_params, weights)
 
 
 def update_values(positive_path, negative_path, output):
@@ -82,6 +105,10 @@ def update_values(positive_path, negative_path, output):
     Given two sets of edges, update the edges in positive with +x and -ve with -x
     If no need of update, return 1 else 0
     """
+    for edge in positive_path:
+        output[edge] += ADD_VALUE
+    for edge in negative_path:
+        output[edge] -= ADD_VALUE
 
 
 if __name__ == "__main__":

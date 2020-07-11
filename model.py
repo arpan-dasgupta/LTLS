@@ -9,7 +9,7 @@ class Linear:
     """
 
     def __init__(self, num_models, num_features):
-        self.models = [linear_model.LinearRegression()] * num_models
+        self.models = [linear_model.SGDRegressor()] * num_models
         self.num_models = num_models
         x_train_single = [np.random.random()] * num_features
         for i in range(num_models):
