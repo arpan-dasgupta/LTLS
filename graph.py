@@ -1,5 +1,5 @@
 import math
-from model import Linear
+from model import Linear, SimpleLinear
 from collections import deque
 
 
@@ -60,7 +60,7 @@ def assign_edges(graph_params, train_specs):
     """
     edges = graph_params["edges"]
     num_edges = len(edges)
-    model = Linear(num_edges, train_specs["num_features"])
+    model = SimpleLinear(num_edges, train_specs["num_features"])
     return model
 
 

@@ -1,13 +1,3 @@
-# from load_train_dot import get_train_data
-
-# from graph import *
-# from labels import *
-# from config import *
-# from model import *
-
-
-# train_specs, x_train, y_train = get_train_data()
-
 # graph_params = create_graph(train_specs)
 # model = assign_edges(graph_params, train_specs)
 # print(graph_params)
@@ -23,6 +13,7 @@
 #     print()
 
 
+from load_test_dot import get_test_data
 from load_train_dot import get_train_data
 
 from graph import *
@@ -31,31 +22,47 @@ from labels import *
 from config import *
 
 train_specs, x_train, y_train = get_train_data()
+test_specs, x_test, y_test = get_test_data()
 
 graph_params = create_graph(train_specs)
 model = assign_edges(graph_params, train_specs)
 # print(graph_params)
 # print(train_specs)
 label_params = create_matrix(train_specs['num_labels'], graph_params)
-for i in range(train_specs['num_features']):
+for i in range(train_specs['train_length']):
     x_row = x_train[i]
     y_row = y_train[i]
     num_positive = len(y_row)
+    count = 0
+    loss_prev = 100
     while True:
         weights = model.get_predictions(x_row)
-        # print(weights)
         paths = get_top_k(graph_params, num_positive+1, weights)
-        # print(paths)
         vp, pos = get_smallest_positive_path(y_row, label_params, weights)
         vn, neg = get_largest_negative_path(
             y_row, paths, label_params, weights)
-        # print(pos)
-        # print(pos,neg)
-        if vp >= vn + ADD_VALUE:
+        loss = max(0, 1+vn-vp)
+        if loss > loss_prev:
+            count += 1
+        if count > 100:
             break
-        update_values(pos, neg, weights)
-        model.update(x_row, weights)
-        print(vp, vn)
-        # print(weights)
-        # break
-    break
+        # print(loss)
+        if loss < 1.1:
+            break
+        temp = [0 for i in range(len(weights))]
+        update_values(pos, neg, temp)
+        model.update(x_row, temp)
+    print(" ", (i/train_specs['train_length'])*100, end='\r')
+print()
+
+
+p_1 = 0
+for i in range(test_specs['test_length']):
+    x_row = x_test[i]
+    y_row = y_test[i]
+    weights = model.get_predictions(x_row)
+    paths = get_top_k(graph_params, 1, weights)
+    label = get_label(paths[0], label_params)
+    if label in y_row:
+        p_1 += 1
+print((p_1/test_specs['test_length']))
