@@ -45,6 +45,7 @@ for i in range(train_specs['train_length']):
         if loss > loss_prev:
             count += 1
         if count > 100:
+            print("exec")
             break
         # print(loss)
         if loss < 1.1:
@@ -52,6 +53,7 @@ for i in range(train_specs['train_length']):
         temp = [0 for i in range(len(weights))]
         update_values(pos, neg, temp)
         model.update(x_row, temp)
+        loss_prev = loss
     print(" ", (i/train_specs['train_length'])*100, end='\r')
 print()
 
