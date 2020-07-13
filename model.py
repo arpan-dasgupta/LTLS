@@ -53,8 +53,6 @@ class SimpleLinear:
                 self.weights[i][j] = np.random.random()
         for j in range(num_models):
             self.biases[j] = np.random.random()
-        # print(self.weights)
-        # print(self.biases)
 
     def get_predictions(self, x_train_single):
         """
@@ -63,7 +61,7 @@ class SimpleLinear:
 
         x_row = x_train_single.toarray()
         x_row = x_row.reshape(-1, 1)
-        h = np.matmul(self.weights, x_row) + self.biases
+        h = np.matmul(self.weights, x_row)
         y = []
         for val in h:
             y.append(val[0])
@@ -79,7 +77,7 @@ class SimpleLinear:
         updated_h = np.reshape(updated_h, (self.num_models, 1))
         update = np.matmul(updated_h, x_row) * self.learning_rate
         self.weights += update
-        self.biases += updated_h * self.learning_rate
+        # self.biases += updated_h * self.learning_rate
 
 
 class MLP:

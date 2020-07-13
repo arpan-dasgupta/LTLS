@@ -1,20 +1,11 @@
-from load_train_dot import get_train_data
+from load_smaller_dot import get_data
 
 from graph import *
 from model import *
 from labels import *
 from config import *
 
-train_specs, x, y = get_train_data()
-
-x_train = x[0:5991]
-y_train = y[0:5991]
-x_test = x[5991:]
-y_test = y[5991:]
-test_specs = {}
-test_specs['test_length'] = train_specs['train_length'] - 5991
-train_specs['train_length'] = 5991
-
+train_specs, x_train, y_train, test_specs, x_test, y_test = get_data()
 
 graph_params = create_graph(train_specs)
 model = assign_edges(graph_params, train_specs)
@@ -34,16 +25,19 @@ for i in range(train_specs['train_length']):
         vn, neg = get_largest_negative_path(
             y_row, paths, label_params, weights)
         loss = max(0, 1+vn-vp)
-        if loss > loss_prev:
+        if loss >= loss_prev:
             count += 1
         if count > 100:
             print("exec")
             break
         # print(loss)
+        # print(pos, neg)
+        # print(get_label(pos, label_params), get_label(neg, label_params))
+        # print(vp, vn)
         if loss < 1.1:
             break
         temp = [0 for i in range(len(weights))]
-        update_values(pos, neg, temp)
+        update_values(pos, neg, temp, loss)
         model.update(x_row, temp)
         loss_prev = loss
     print(" ", (i/train_specs['train_length'])*100, end='\r')

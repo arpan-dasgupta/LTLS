@@ -100,15 +100,15 @@ def get_largest_negative_path(y_row, paths, label_params, weights):
             return get_path(label, label_params, weights)
 
 
-def update_values(positive_path, negative_path, output):
+def update_values(positive_path, negative_path, output, loss):
     """
     Given two sets of edges, update the edges in positive with +x and -ve with -x
     If no need of update, return 1 else 0
     """
     for edge in positive_path:
-        output[edge] += ADD_VALUE
+        output[edge] += 1
     for edge in negative_path:
-        output[edge] -= ADD_VALUE
+        output[edge] -= 1
 
 
 if __name__ == "__main__":
