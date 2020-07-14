@@ -13,9 +13,11 @@ model = assign_edges(graph_params, train_specs)
 label_params = create_matrix(train_specs['num_labels'], graph_params)
 
 loops_per_epoch = []
+loss_per_epoch = []
 times = [0 for i in range(6)]
 for epoch in range(EPOCHS):
     sum_loops = 0
+    sum_loss = 0
     for i in range(train_specs['train_length']):
         x_row = x_train[i]
         y_row = y_train[i]
@@ -36,17 +38,18 @@ for epoch in range(EPOCHS):
                 y_row, paths, label_params, weights)
             t5 = time.perf_counter()
             loss = max(0, 1+vn-vp)
-            if loss >= loss_prev:
+            if loss_prev-loss <= LOSS_THRESHOLD:
                 count += 1
-            if count > 100:
-                print("exec")
+            if count > NUM_ANOMALIES:
+                # print("exec")
+                sum_loss += loss
                 break
             # print(loss)
             # print(pos, neg)
             # print(get_label(pos, label_params), get_label(neg, label_params))
             # print(vp, vn)
-            if loss < 1.08:
-                break
+            # if loss < 1.08:
+            #     break
             temp = [0 for i in range(len(weights))]
             update_values(pos, neg, temp, loss)
             t6 = time.perf_counter()
@@ -59,10 +62,13 @@ for epoch in range(EPOCHS):
             times[4] += t6-t5
             times[5] += t7-t6
             loss_prev = loss
+        # break
         sum_loops += loop_counter
         print(" ", (i/train_specs['train_length'])*100, end='\r')
     loops_per_epoch.append(sum_loops)
+    loss_per_epoch.append(sum_loss/train_specs['train_length'])
     print()
+    # break
 
     p_1 = 0
     for i in range(test_specs['test_length']):
@@ -76,4 +82,5 @@ for epoch in range(EPOCHS):
     print("Score: ", (p_1/test_specs['test_length']))
 
 print(loops_per_epoch)
+print(loss_per_epoch)
 print(times)

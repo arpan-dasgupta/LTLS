@@ -46,7 +46,7 @@ def get_data():
     f1 = open(TRAIN_SPLITS)
     f2 = open(TEST_SPLITS)
 
-    split_no = 4
+    split_no = 0
     x_train = sparse.lil_matrix((4880, nfeature))
     y_train = []
     x_test = sparse.lil_matrix((2515, nfeature))
