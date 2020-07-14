@@ -26,6 +26,7 @@ for epoch in range(EPOCHS):
         loop_counter = 0
         while True:
             loop_counter += 1
+
             weights = model.get_predictions(x_row)
             paths = get_top_k(graph_params, num_positive+1, weights)
             vp, pos = get_smallest_positive_path(y_row, label_params, weights)
