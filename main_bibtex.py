@@ -41,7 +41,7 @@ for epoch in range(EPOCHS):
             if loss_prev-loss <= LOSS_THRESHOLD:
                 count += 1
             if count > NUM_ANOMALIES:
-                # print("exec")
+                # print(loss)
                 sum_loss += loss
                 break
             # print(loss)
@@ -50,7 +50,7 @@ for epoch in range(EPOCHS):
             # print(vp, vn)
             # if loss < 1.08:
             #     break
-            temp = [0 for i in range(len(weights))]
+            temp = [0.0 for i in range(len(weights))]
             update_values(pos, neg, temp, loss)
             t6 = time.perf_counter()
             model.update(x_row, temp)
@@ -66,7 +66,7 @@ for epoch in range(EPOCHS):
         sum_loops += loop_counter
         print(" ", (i/train_specs['train_length'])*100, end='\r')
     loops_per_epoch.append(sum_loops)
-    loss_per_epoch.append(sum_loss/train_specs['train_length'])
+    loss_per_epoch.append(sum_loss)
     print()
     # break
 
