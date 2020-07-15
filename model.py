@@ -1,6 +1,6 @@
-from sklearn import neural_network, linear_model
 import numpy as np
-
+from sklearn import neural_network, linear_model
+from numba import njit,jit
 
 class Linear:
     """
@@ -35,6 +35,13 @@ class Linear:
         for i in range(self.num_models):
             self.models[i].partial_fit(x_row, [updated_h[i]])
 
+@jit
+def updater(x_row,updated_h,weights,num_features,num_models,learning_rate):
+    x_row = np.reshape(x_row, (1, num_features))
+    updated_h = np.array(updated_h)
+    updated_h = np.reshape(updated_h, (num_models, 1))
+    update = np.dot(updated_h, x_row) * learning_rate
+    weights += update
 
 class SimpleLinear:
     """
@@ -67,16 +74,13 @@ class SimpleLinear:
             y.append(val[0])
         return y
 
+    
     def update(self, x_train_single, updated_h):
         """
         Train a single step with the updated_h as a list of expected output
         """
         x_row = np.array(x_train_single.toarray())
-        x_row = np.reshape(x_row, (1, self.num_features))
-        updated_h = np.array(updated_h)
-        updated_h = np.reshape(updated_h, (self.num_models, 1))
-        update = np.matmul(updated_h, x_row) * self.learning_rate
-        self.weights += update
+        updater(x_row,updated_h,self.weights,self.num_features,self.num_models,self.learning_rate)
         # self.biases += updated_h * self.learning_rate
 
 
