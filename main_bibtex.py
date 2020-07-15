@@ -29,6 +29,7 @@ for epoch in range(EPOCHS):
             loop_counter += 1
             t1 = time.perf_counter()
             weights = model.get_predictions(x_row)
+            #print(weights)
             t2 = time.perf_counter()
             paths = get_top_k(graph_params, num_positive+1, weights)
             t3 = time.perf_counter()
@@ -62,7 +63,8 @@ for epoch in range(EPOCHS):
             times[4] += t6-t5
             times[5] += t7-t6
             loss_prev = loss
-        # break
+            #break
+        #break
         sum_loops += loop_counter
         print(" ", (i/train_specs['train_length'])*100, end='\r')
     loops_per_epoch.append(sum_loops)

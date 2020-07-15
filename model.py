@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn import neural_network, linear_model
-from numba import njit,jit
+#from numba import njit,jit
+import cupy as cp
 
 class Linear:
     """
@@ -35,13 +36,14 @@ class Linear:
         for i in range(self.num_models):
             self.models[i].partial_fit(x_row, [updated_h[i]])
 
-@jit
+#@jit
 def updater(x_row,updated_h,weights,num_features,num_models,learning_rate):
-    x_row = np.reshape(x_row, (1, num_features))
-    updated_h = np.array(updated_h)
-    updated_h = np.reshape(updated_h, (num_models, 1))
-    update = np.dot(updated_h, x_row) * learning_rate
+    x_row = cp.reshape(x_row, (1, num_features))
+    updated_h = cp.array(updated_h)
+    updated_h = cp.reshape(updated_h, (num_models, 1))
+    update = cp.dot(updated_h, x_row) * learning_rate
     weights += update
+    cp.cuda.Stream.null.synchronize()
 
 class SimpleLinear:
     """
@@ -53,8 +55,8 @@ class SimpleLinear:
     def __init__(self, num_models, num_features):
         self.num_models = num_models
         self.num_features = num_features
-        self.weights = np.full((num_models, num_features), 0.0)
-        self.biases = np.full((num_models, 1), 0.0)
+        self.weights = cp.full((num_models, num_features), 0.0)
+        self.biases = cp.full((num_models, 1), 0.0)
         for i in range(num_models):
             for j in range(num_features):
                 self.weights[i][j] = np.random.random()
@@ -67,8 +69,11 @@ class SimpleLinear:
         """
 
         x_row = x_train_single.toarray()
-        x_row = x_row.reshape(-1, 1)
-        h = np.matmul(self.weights, x_row)
+        x_row = cp.array(x_row.reshape(-1, 1))
+	
+        h = cp.matmul(self.weights, x_row)
+        cp.cuda.Stream.null.synchronize()
+        h = cp.asnumpy(h)
         y = []
         for val in h:
             y.append(val[0])
@@ -79,7 +84,8 @@ class SimpleLinear:
         """
         Train a single step with the updated_h as a list of expected output
         """
-        x_row = np.array(x_train_single.toarray())
+        x_row = cp.array(x_train_single.toarray())
+        cp.cuda.Stream.null.synchronize()
         updater(x_row,updated_h,self.weights,self.num_features,self.num_models,self.learning_rate)
         # self.biases += updated_h * self.learning_rate
 
