@@ -41,7 +41,7 @@ class SimpleLinear:
     Model class 
     Can be replaced by any other model with same functions
     """
-    learning_rate = 0.0005
+    learning_rate = 0.001
 
     def __init__(self, num_models, num_features):
         self.num_models = num_models

@@ -64,7 +64,7 @@ for epoch in range(EPOCHS):
             loss_prev = loss
         # break
         sum_loops += loop_counter
-#        print(" ", (i/train_specs['train_length'])*100, end='\r')
+        print(" ", (i/train_specs['train_length'])*100, end='\r')
     loops_per_epoch.append(sum_loops)
     loss_per_epoch.append(sum_loss)
     print()

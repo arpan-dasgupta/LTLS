@@ -9,7 +9,7 @@ TRAIN_FILE_PATH = "Eurlex/eurlex_train.txt"
 #T_FILE_PATH = "WikiLSHTC/wikiLSHTC_test.txt"
 #TRAIN_FILE_PATH = "WikiLSHTC/wikiLSHTC_train.txt"
 
-LOSS_THRESHOLD = 1
+LOSS_THRESHOLD = 0.05
 NUM_ANOMALIES = 12
 
 ADD_VALUE = 1
