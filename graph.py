@@ -76,95 +76,95 @@ def get_top_k(graph_params, num, weights):
     num_edges = len(edges)
     edge_map = graph_params["edge_map"]
 
-    # ans = get_top_k2(num_nodes,mapstringdouble(edge_map),adjList,num,weights)
-    # ans = [list(x) for x in ans]
-    # # print(ans)
-    # return ans
+    ans = get_top_k2(num_nodes,mapstringdouble(edge_map),adjList,num,weights)
+    ans = [list(x) for x in ans]
+    # print(ans)
+    return ans
 
-    # compute indegrees for toposort
-    indeg = [0 for i in range(num_nodes)]
-    for i in range(0, num_nodes):
-        for a in adjList[i]:
-            indeg[a] += 1
+    # # compute indegrees for toposort
+    # indeg = [0 for i in range(num_nodes)]
+    # for i in range(0, num_nodes):
+    #     for a in adjList[i]:
+    #         indeg[a] += 1
 
-    # bestk is the dp here, stores [value, [parent_vertex, xth highest path reaching parent vertex]]
-    bestk = [list() for i in range(num_nodes)]
-    bestk[0].append([0, [-1, -1]])
+    # # bestk is the dp here, stores [value, [parent_vertex, xth highest path reaching parent vertex]]
+    # bestk = [list() for i in range(num_nodes)]
+    # bestk[0].append([0, [-1, -1]])
 
-    q = deque()
-    q.append(0)
-    while len(q) > 0:
-        ver = q.popleft()
-        # print(ver)
-        for neighbour in adjList[ver]:
-            # print(neighbour, end=' + ')
-            ##################
-            # Main Viterbi code here
-            cnt = 0
-            for val in bestk[ver]:
-                # Calculate new weight of path
-                new_val = val[0] + \
-                    weights[edge_map[str(ver)+":"+str(neighbour)]]
-                counter = 0
-                temp = [new_val, [ver, cnt]]
-                # Loop till the number of paths here (shouldnt exceed k(num))
-                while counter < len(bestk[neighbour]):
-                    if bestk[neighbour][counter][0] < new_val:
-                        # Push back values till the end if a better path found
-                        temp = bestk[neighbour][counter]
-                        # print(temp)
-                        bestk[neighbour][counter] = [new_val, [ver, cnt]]
-                        while counter < len(bestk[neighbour])-1 and counter < num-1:
-                            # print(temp)
-                            # Swap temp, bestk[neighbour][counter+1]
-                            temp2 = bestk[neighbour][counter+1]
-                            bestk[neighbour][counter+1] = temp
-                            temp = temp2
-                            ##
-                            counter += 1
-                        break
-                    counter += 1
-                # If there were less elements than k then add
-                if len(bestk[neighbour]) < num:
-                    bestk[neighbour].append(temp)
-                    # print("Yay ", neighbour)
-                cnt += 1
-            ##################
-            indeg[neighbour] -= 1
-            if indeg[neighbour] == 0:
-                q.append(neighbour)
-        # print()
-        # print(bestk)
+    # q = deque()
+    # q.append(0)
+    # while len(q) > 0:
+    #     ver = q.popleft()
+    #     # print(ver)
+    #     for neighbour in adjList[ver]:
+    #         # print(neighbour, end=' + ')
+    #         ##################
+    #         # Main Viterbi code here
+    #         cnt = 0
+    #         for val in bestk[ver]:
+    #             # Calculate new weight of path
+    #             new_val = val[0] + \
+    #                 weights[edge_map[str(ver)+":"+str(neighbour)]]
+    #             counter = 0
+    #             temp = [new_val, [ver, cnt]]
+    #             # Loop till the number of paths here (shouldnt exceed k(num))
+    #             while counter < len(bestk[neighbour]):
+    #                 if bestk[neighbour][counter][0] < new_val:
+    #                     # Push back values till the end if a better path found
+    #                     temp = bestk[neighbour][counter]
+    #                     # print(temp)
+    #                     bestk[neighbour][counter] = [new_val, [ver, cnt]]
+    #                     while counter < len(bestk[neighbour])-1 and counter < num-1:
+    #                         # print(temp)
+    #                         # Swap temp, bestk[neighbour][counter+1]
+    #                         temp2 = bestk[neighbour][counter+1]
+    #                         bestk[neighbour][counter+1] = temp
+    #                         temp = temp2
+    #                         ##
+    #                         counter += 1
+    #                     break
+    #                 counter += 1
+    #             # If there were less elements than k then add
+    #             if len(bestk[neighbour]) < num:
+    #                 bestk[neighbour].append(temp)
+    #                 # print("Yay ", neighbour)
+    #             cnt += 1
+    #         ##################
+    #         indeg[neighbour] -= 1
+    #         if indeg[neighbour] == 0:
+    #             q.append(neighbour)
+    #     # print()
+    #     # print(bestk)
 
-    # print("Here", num_nodes)
-    # Retrieve paths (in vertices form)
-    paths = []
-    for i in range(len(bestk[num_nodes-1])):
-        path = [num_nodes-1]
-        curr = bestk[num_nodes-1][i]
-        # print(curr[0],end=' ')
-        while curr[1][1] != -1:
-            path.append(curr[1][0])
-            # print(curr[1][0], curr)
-            curr = bestk[curr[1][0]][curr[1][1]]
-        # path.append(0)
-        paths.append(path)
+    # # print("Here", num_nodes)
+    # # Retrieve paths (in vertices form)
+    # paths = []
+    # for i in range(len(bestk[num_nodes-1])):
+    #     path = [num_nodes-1]
+    #     curr = bestk[num_nodes-1][i]
+    #     # print(curr[0],end=' ')
+    #     while curr[1][1] != -1:
+    #         path.append(curr[1][0])
+    #         # print(curr[1][0], curr)
+    #         curr = bestk[curr[1][0]][curr[1][1]]
+    #     # path.append(0)
+    #     paths.append(path)
 
-    # print(paths)
-    # Convert to edge index form
-    indexed_paths = []
-    for path in paths:
-        indexed_path = []
-        for i in range(len(path)-1):
-            indexed_path.append(edge_map[str(path[i+1])+':'+str(path[i])])
-        indexed_paths.append(indexed_path)
+    # # print(paths)
+    # # Convert to edge index form
+    # indexed_paths = []
+    # for path in paths:
+    #     indexed_path = []
+    #     for i in range(len(path)-1):
+    #         indexed_path.append(edge_map[str(path[i+1])+':'+str(path[i])])
+    #     indexed_paths.append(indexed_path)
 
-    # print("======")
-    # for i in range(num_nodes):
-    #     print(bestk[i])
-    # print("======")
-    # print(paths)
-    return indexed_paths
+    # # print("======")
+    # # for i in range(num_nodes):
+    # #     print(bestk[i])
+    # # print("======")
+    # # print(paths)
+    # return indexed_paths
 
 
 if __name__ == "__main__":
