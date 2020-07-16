@@ -9,6 +9,7 @@ from distutils.core import setup, Extension
 
 example_module = Extension('_example',
                            sources=['example_wrap.cxx'],
+                           extra_compile_args = ['-std=c++14','-O3']
                            )
 
 setup (name = 'example',
