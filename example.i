@@ -14,7 +14,7 @@ namespace std {
     %template(pairintint) pair<int,int>;
     %template(vectorpairintint) vector<pair<int,int>>;
     %template(vectorpairdoublevector) vector<pair<double,vector<int>>>;
-    %template(mapstringint) map<string,int>;
+    %template(mapstringdouble) map<string,double>;
     %template(vectorvector) vector<vector<int>>;
 }
 

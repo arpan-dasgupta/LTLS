@@ -573,23 +573,23 @@ class vectorpairdoublevector(object):
 # Register vectorpairdoublevector in _example:
 _example.vectorpairdoublevector_swigregister(vectorpairdoublevector)
 
-class mapstringint(object):
+class mapstringdouble(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
 
     def iterator(self):
-        return _example.mapstringint_iterator(self)
+        return _example.mapstringdouble_iterator(self)
     def __iter__(self):
         return self.iterator()
 
     def __nonzero__(self):
-        return _example.mapstringint___nonzero__(self)
+        return _example.mapstringdouble___nonzero__(self)
 
     def __bool__(self):
-        return _example.mapstringint___bool__(self)
+        return _example.mapstringdouble___bool__(self)
 
     def __len__(self):
-        return _example.mapstringint___len__(self)
+        return _example.mapstringdouble___len__(self)
     def __iter__(self):
         return self.key_iterator()
     def iterkeys(self):
@@ -600,86 +600,86 @@ class mapstringint(object):
         return self.iterator()
 
     def __getitem__(self, key):
-        return _example.mapstringint___getitem__(self, key)
+        return _example.mapstringdouble___getitem__(self, key)
 
     def __delitem__(self, key):
-        return _example.mapstringint___delitem__(self, key)
+        return _example.mapstringdouble___delitem__(self, key)
 
     def has_key(self, key):
-        return _example.mapstringint_has_key(self, key)
+        return _example.mapstringdouble_has_key(self, key)
 
     def keys(self):
-        return _example.mapstringint_keys(self)
+        return _example.mapstringdouble_keys(self)
 
     def values(self):
-        return _example.mapstringint_values(self)
+        return _example.mapstringdouble_values(self)
 
     def items(self):
-        return _example.mapstringint_items(self)
+        return _example.mapstringdouble_items(self)
 
     def __contains__(self, key):
-        return _example.mapstringint___contains__(self, key)
+        return _example.mapstringdouble___contains__(self, key)
 
     def key_iterator(self):
-        return _example.mapstringint_key_iterator(self)
+        return _example.mapstringdouble_key_iterator(self)
 
     def value_iterator(self):
-        return _example.mapstringint_value_iterator(self)
+        return _example.mapstringdouble_value_iterator(self)
 
     def __setitem__(self, *args):
-        return _example.mapstringint___setitem__(self, *args)
+        return _example.mapstringdouble___setitem__(self, *args)
 
     def asdict(self):
-        return _example.mapstringint_asdict(self)
+        return _example.mapstringdouble_asdict(self)
 
     def __init__(self, *args):
-        _example.mapstringint_swiginit(self, _example.new_mapstringint(*args))
+        _example.mapstringdouble_swiginit(self, _example.new_mapstringdouble(*args))
 
     def empty(self):
-        return _example.mapstringint_empty(self)
+        return _example.mapstringdouble_empty(self)
 
     def size(self):
-        return _example.mapstringint_size(self)
+        return _example.mapstringdouble_size(self)
 
     def swap(self, v):
-        return _example.mapstringint_swap(self, v)
+        return _example.mapstringdouble_swap(self, v)
 
     def begin(self):
-        return _example.mapstringint_begin(self)
+        return _example.mapstringdouble_begin(self)
 
     def end(self):
-        return _example.mapstringint_end(self)
+        return _example.mapstringdouble_end(self)
 
     def rbegin(self):
-        return _example.mapstringint_rbegin(self)
+        return _example.mapstringdouble_rbegin(self)
 
     def rend(self):
-        return _example.mapstringint_rend(self)
+        return _example.mapstringdouble_rend(self)
 
     def clear(self):
-        return _example.mapstringint_clear(self)
+        return _example.mapstringdouble_clear(self)
 
     def get_allocator(self):
-        return _example.mapstringint_get_allocator(self)
+        return _example.mapstringdouble_get_allocator(self)
 
     def count(self, x):
-        return _example.mapstringint_count(self, x)
+        return _example.mapstringdouble_count(self, x)
 
     def erase(self, *args):
-        return _example.mapstringint_erase(self, *args)
+        return _example.mapstringdouble_erase(self, *args)
 
     def find(self, x):
-        return _example.mapstringint_find(self, x)
+        return _example.mapstringdouble_find(self, x)
 
     def lower_bound(self, x):
-        return _example.mapstringint_lower_bound(self, x)
+        return _example.mapstringdouble_lower_bound(self, x)
 
     def upper_bound(self, x):
-        return _example.mapstringint_upper_bound(self, x)
-    __swig_destroy__ = _example.delete_mapstringint
+        return _example.mapstringdouble_upper_bound(self, x)
+    __swig_destroy__ = _example.delete_mapstringdouble
 
-# Register mapstringint in _example:
-_example.mapstringint_swigregister(mapstringint)
+# Register mapstringdouble in _example:
+_example.mapstringdouble_swigregister(mapstringdouble)
 
 class vectorvector(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
@@ -797,8 +797,8 @@ def half(v):
 def halve_in_place(v):
     return _example.halve_in_place(v)
 
-def get_top_k(num_nodes, edge_map, adjList):
-    return _example.get_top_k(num_nodes, edge_map, adjList)
+def get_top_k2(num_nodes, edge_map, adjList, num, weights):
+    return _example.get_top_k2(num_nodes, edge_map, adjList, num, weights)
 
 def gp(a, b):
     return _example.gp(a, b)

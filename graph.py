@@ -1,6 +1,7 @@
 import math
 from model import Linear, SimpleLinear
 from collections import deque
+from example import *
 
 
 def create_graph(train_specs):
@@ -75,6 +76,11 @@ def get_top_k(graph_params, num, weights):
     num_edges = len(edges)
     edge_map = graph_params["edge_map"]
 
+    # ans = get_top_k2(num_nodes,mapstringdouble(edge_map),adjList,num,weights)
+    # ans = [list(x) for x in ans]
+    # # print(ans)
+    # return ans
+
     # compute indegrees for toposort
     indeg = [0 for i in range(num_nodes)]
     for i in range(0, num_nodes):
@@ -136,7 +142,7 @@ def get_top_k(graph_params, num, weights):
     for i in range(len(bestk[num_nodes-1])):
         path = [num_nodes-1]
         curr = bestk[num_nodes-1][i]
-        # print(curr)
+        # print(curr[0],end=' ')
         while curr[1][1] != -1:
             path.append(curr[1][0])
             # print(curr[1][0], curr)
