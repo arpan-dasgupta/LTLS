@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn import neural_network, linear_model
+from scipy import sparse
 #from numba import njit,jit
 import cupy as cp
 
@@ -41,7 +42,7 @@ def updater(x_row,updated_h,weights,num_features,num_models,learning_rate):
     x_row = cp.reshape(x_row, (1, num_features))
     updated_h = cp.array(updated_h)
     updated_h = cp.reshape(updated_h, (num_models, 1))
-    update = cp.dot(updated_h, x_row) * learning_rate
+    update = sparse.lil_matrix.dot(updated_h, x_row) * learning_rate
     weights += update
     cp.cuda.Stream.null.synchronize()
 
@@ -68,10 +69,10 @@ class SimpleLinear:
         Get predictions for a single row of features
         """
 
-        x_row = x_train_single.toarray()
+        x_row = x_train_single
         x_row = cp.array(x_row.reshape(-1, 1))
 	
-        h = cp.matmul(self.weights, x_row)
+        h = sparse.lil_matrix.dot(self.weights, x_row)
         cp.cuda.Stream.null.synchronize()
         h = cp.asnumpy(h)
         y = []
@@ -84,9 +85,9 @@ class SimpleLinear:
         """
         Train a single step with the updated_h as a list of expected output
         """
-        x_row = cp.array(x_train_single.toarray())
-        cp.cuda.Stream.null.synchronize()
-        updater(x_row,updated_h,self.weights,self.num_features,self.num_models,self.learning_rate)
+        # x_row = cp.array(x_train_single.toarray())
+        # cp.cuda.Stream.null.synchronize()
+        updater(x_train_single,updated_h,self.weights,self.num_features,self.num_models,self.learning_rate)
         # self.biases += updated_h * self.learning_rate
 
 
