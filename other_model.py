@@ -47,13 +47,7 @@ class SimpleLinear:
     def __init__(self, num_models, num_features):
         self.num_models = num_models
         self.num_features = num_features
-        self.weights = np.full((num_models, num_features), 0.0)
-        self.biases = np.full((num_models, 1), 0.0)
-        for i in range(num_models):
-            for j in range(num_features):
-                self.weights[i][j] = np.random.random()
-        for j in range(num_models):
-            self.biases[j] = np.random.random()
+        self.weights = np.random.rand(num_models, num_features)
 
     def get_predictions(self, x_train_single):
         """

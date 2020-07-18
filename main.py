@@ -66,13 +66,13 @@ for epoch in range(EPOCHS):
             times[4] += t6-t5
             times[5] += t7-t6
             loss_prev = loss
-        break
+        #break
         sum_loops += loop_counter
         print(" ", (i/train_specs['train_length'])*100, end='\r')
     loops_per_epoch.append(sum_loops)
     loss_per_epoch.append(sum_loss)
     print()
-    break
+    #break
 
     p_1 = 0
     for i in range(test_specs['test_length']):
@@ -83,6 +83,8 @@ for epoch in range(EPOCHS):
         label = get_label(paths[0], label_params)
         if label in y_row:
             p_1 += 1
+        print(" ", (i/test_specs['test_length'])*100, end='\r')
+        
     print("Score: ", (p_1/test_specs['test_length']))
     #break
 
