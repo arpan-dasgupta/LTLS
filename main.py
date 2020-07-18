@@ -48,7 +48,7 @@ for epoch in range(EPOCHS):
                 # print(loss)
                 sum_loss += loss
                 break
-            print(loss)
+            #print(loss)
             # print(pos, neg)
             # print(get_label(pos, label_params), get_label(neg, label_params))
             # print(vp, vn)

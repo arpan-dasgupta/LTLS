@@ -3,6 +3,7 @@ from sklearn import neural_network, linear_model
 from scipy import sparse
 #from numba import njit,jit
 import cupy as cp
+import cupyx
 
 class Linear:
     """
@@ -39,10 +40,14 @@ class Linear:
 
 #@jit
 def updater(x_row,updated_h,weights,num_features,num_models,learning_rate):
-    x_row = cp.reshape(x_row, (1, num_features))
+    x_row = cp.array(x_row.toarray())
+    x_row = cp.reshape(x_row,(1,num_features))
+    #x_row = x_row.reshape(1, num_features)
+    #x_row = cupyx.scipy.sparse.csr_matrix(x_row)
     updated_h = cp.array(updated_h)
     updated_h = cp.reshape(updated_h, (num_models, 1))
-    update = sparse.lil_matrix.dot(updated_h, x_row) * learning_rate
+    #update = cupyx.scipy.sparse.csr_matrix.dot(updated_h, x_row) * learning_rate
+    update = cp.dot(updated_h,x_row) * learning_rate
     weights += update
     cp.cuda.Stream.null.synchronize()
 
@@ -51,34 +56,34 @@ class SimpleLinear:
     Model class 
     Can be replaced by any other model with same functions
     """
-    learning_rate = 0.001
+    learning_rate = 0.01
 
     def __init__(self, num_models, num_features):
         self.num_models = num_models
         self.num_features = num_features
         self.weights = cp.random.rand(num_models, num_features)
-#        self.biases = cp.full((num_models, 1), 0.0)
-#        for i in range(num_models):
-#            for j in range(num_features):
-#                self.weights[i][j] = np.random.random()
-#        for j in range(num_models):
-#            self.biases[j] = np.random.random()
 
     def get_predictions(self, x_train_single):
         """
         Get predictions for a single row of features
         """
 
-        x_row = x_train_single
+        x_row = x_train_single.toarray()
         x_row = cp.array(x_row.reshape(-1, 1))
+        #x_row = cupyx.scipy.sparse.csr_matrix(x_row)
 	
-        h = sparse.lil_matrix.dot(self.weights, x_row)
-        cp.cuda.Stream.null.synchronize()
+        #h = cupyx.scipy.sparse.csr_matrix.dot(self.weights, x_row)
+        h = cp.matmul(self.weights,x_row)
+        h = cp.reshape(h,(self.num_models))
         h = cp.asnumpy(h)
-        y = []
-        for val in h:
-            y.append(val[0])
-        return y
+        
+        cp.cuda.Stream.null.synchronize()
+        return h.tolist()
+        #y = []
+        #for val in h:
+        #    y.append(val[0])
+        
+        #return y
 
     
     def update(self, x_train_single, updated_h):
