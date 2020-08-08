@@ -2,7 +2,7 @@ import gc
 from scipy import sparse
 import pickle
 from sklearn.preprocessing import normalize
-from config import DATA_FILE_PATH, TRAIN_SPLITS, TEST_SPLITS
+from config import DATA_FILE_PATH, TRAIN_SPLITS, TEST_SPLITS,TRAIN_NO,TEST_NO
 
 
 '''
@@ -19,7 +19,8 @@ def get_data():
     size = f.readline()
     nrows, nfeature, nlabel = [int(s) for s in size.split()]
 
-    x_m, pos, y_m = [[[]] * nrows] * 3
+    x_m, pos, y_m = [[] for i in range(nrows)],[[] for i in range(nrows)],[[] for i in range(nrows)]
+    print(nrows,nlabel,nfeature)
 
     for i in range(nrows):
         line = f.readline()
@@ -47,18 +48,18 @@ def get_data():
     f2 = open(TEST_SPLITS)
 
     split_no = 0
-    x_train = sparse.lil_matrix((4880, nfeature))
+    x_train = sparse.lil_matrix((TRAIN_NO, nfeature))
     y_train = []
-    x_test = sparse.lil_matrix((2515, nfeature))
+    x_test = sparse.lil_matrix((TEST_NO, nfeature))
     y_test = []
 
-    for i in range(4880):
+    for i in range(TRAIN_NO):
         vals = f1.readline()
         vals = [int(s) for s in vals.split()]
         x_train[i] = x_mod[vals[split_no]-1]
         y_train.append(y_m[vals[split_no]-1])
 
-    for i in range(2515):
+    for i in range(TEST_NO):
         vals = f2.readline()
         vals = [int(s) for s in vals.split(sep=' ')]
         x_test[i] = x_mod[vals[split_no]-1]
