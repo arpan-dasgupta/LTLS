@@ -18,19 +18,24 @@ def get_train_data():
     size = f.readline()
     nrows, nfeature, nlabel = [int(s) for s in size.split()]
 
-    x_m, pos, y_m = [[[]] * nrows] * 3
+    x_m = [[] for i in range(nrows)]
+    pos = [[] for i in range(nrows)]
+    y_m = [[] for i in range(nrows)]
 
     for i in range(nrows):
         line = f.readline()
         temp = [s for s in line.split(sep=' ')]
         pos[i] = [int(s.split(':')[0]) for s in temp[1:]]
+        print(pos[i])
         x_m[i] = [float(s.split(':')[1]) for s in temp[1:]]
+        print(pos[i])
         for s in temp[0].split(','):
             try:
                 int(s)
                 y_m[i] = [int(s) for s in temp[0].split(',')]
             except ValueError:
                 y_m[i] = []
+        exit(0)
 
     x_train = sparse.lil_matrix((nrows, nfeature))
     for i in range(nrows):
